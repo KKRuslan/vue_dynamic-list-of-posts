@@ -47,7 +47,11 @@
 
     <div class="field is-grouped mt-4">
       <div class="control">
-        <button type="submit" class="button is-link">
+        <button 
+          type="submit" 
+          class="button is-link"
+          :class="{ 'is-loading': isSubmitting }"
+        >
           {{ initialData ? "Save" : "Create" }}
         </button>
       </div>
@@ -61,7 +65,7 @@
 </template>
 
 <script setup>
-import { reactive, watch } from "vue";
+import { reactive, watch, ref } from "vue";
 
 const props = defineProps({
   initialData: {
@@ -82,16 +86,23 @@ const errors = reactive({
   body: "",
 });
 
+const isSubmitting = ref(false);
+
+const clearForm = () => {
+  form.title = "";
+  form.body = "";
+  errors.title = "";
+  errors.body = "";
+};
+
 const initializeForm = () => {
   if (props.initialData) {
     form.title = props.initialData.title;
     form.body = props.initialData.body;
   } else {
-    form.title = "";
-    form.body = "";
+    clearForm();
   }
-  errors.title = "";
-  errors.body = "";
+  isSubmitting.value = false; 
 };
 
 initializeForm();
@@ -104,8 +115,6 @@ watch(
 );
 
 const handleCancel = () => {
-  errors.title = "";
-  errors.body = "";
   emit("cancel");
 };
 
@@ -125,6 +134,8 @@ const validate = () => {
 
 const handleSubmit = () => {
   if (validate()) {
+    isSubmitting.value = true;
+    
     emit("save", {
       ...form,
       id: props.initialData ? props.initialData.id : undefined,
