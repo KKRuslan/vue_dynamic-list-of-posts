@@ -1,6 +1,5 @@
 <template>
   <form @submit.prevent="submitComment" class="mt-4">
-
     <div class="field" data-cy="NameField">
       <label class="label" for="comment-author-name">Author Name</label>
       <div class="control has-icons-left has-icons-right">
@@ -71,7 +70,12 @@
         </button>
       </div>
       <div class="control">
-        <button type="button" class="button is-link is-light" @click="$emit('cancel')">
+        <button type="button" class="button is-link is-light" @click="clearForm">
+          Clear
+        </button>
+      </div>
+      <div class="control">
+        <button type="button" class="button is-text" @click="handleCancel">
           Cancel
         </button>
       </div>
@@ -137,11 +141,12 @@ const clearForm = () => {
   errors.body = '';
 };
 
-const submitComment = async () => {
-  errors.name = '';
-  errors.email = '';
-  errors.body = '';
+const handleCancel = () => {
+  clearForm();
+  emit('cancel');
+};
 
+const submitComment = async () => {
   if (!validate()) return;
 
   isSubmitting.value = true;
@@ -155,8 +160,7 @@ const submitComment = async () => {
     });
     
     emit('comment-added', newComment);
-    
-    form.body = '';
+    form.body = ''; 
     
   } catch (error) {
     alert('Failed to add comment. Please try again.');

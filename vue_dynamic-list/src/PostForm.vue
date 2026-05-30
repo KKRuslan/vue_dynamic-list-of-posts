@@ -4,15 +4,8 @@
       {{ initialData ? "Edit post" : "Create new post" }}
     </h2>
 
-    <div
-      class="field"
-      data-cy="NameField"
-    >
-      <label
-        class="label"
-        for="post-title"
-        >Title</label
-      >
+    <div class="field" data-cy="NameField">
+      <label class="label" for="post-title">Title</label>
       <div class="control has-icons-left has-icons-right">
         <input
           v-model="form.title"
@@ -26,32 +19,17 @@
         <span class="icon is-small is-left">
           <i class="fas fa-user"></i>
         </span>
-        <span
-          v-if="errors.title"
-          class="icon is-small is-right has-text-danger"
-          data-cy="ErrorIcon"
-        >
+        <span v-if="errors.title" class="icon is-small is-right has-text-danger" data-cy="ErrorIcon">
           <i class="fas fa-exclamation-triangle"></i>
         </span>
       </div>
-      <p
-        v-if="errors.title"
-        class="help is-danger"
-        data-cy="ErrorMessage"
-      >
+      <p v-if="errors.title" class="help is-danger" data-cy="ErrorMessage">
         {{ errors.title }}
       </p>
     </div>
 
-    <div
-      class="field"
-      data-cy="BodyField"
-    >
-      <label
-        class="label"
-        for="post-body"
-        >Write Post Body</label
-      >
+    <div class="field" data-cy="BodyField">
+      <label class="label" for="post-body">Write Post Body</label>
       <div class="control">
         <textarea
           v-model="form.body"
@@ -62,30 +40,19 @@
           @input="errors.body = ''"
         ></textarea>
       </div>
-      <p
-        v-if="errors.body"
-        class="help is-danger"
-        data-cy="ErrorMessage"
-      >
+      <p v-if="errors.body" class="help is-danger" data-cy="ErrorMessage">
         {{ errors.body }}
       </p>
     </div>
 
     <div class="field is-grouped mt-4">
       <div class="control">
-        <button
-          type="submit"
-          class="button is-link"
-        >
+        <button type="submit" class="button is-link">
           {{ initialData ? "Save" : "Create" }}
         </button>
       </div>
       <div class="control">
-        <button
-          type="button"
-          class="button is-link is-light"
-          @click="$emit('cancel')"
-        >
+        <button type="button" class="button is-link is-light" @click="handleCancel">
           Cancel
         </button>
       </div>
@@ -123,6 +90,8 @@ const initializeForm = () => {
     form.title = "";
     form.body = "";
   }
+  errors.title = "";
+  errors.body = "";
 };
 
 initializeForm();
@@ -134,10 +103,14 @@ watch(
   },
 );
 
-const validate = () => {
-  let isValid = true;
+const handleCancel = () => {
   errors.title = "";
   errors.body = "";
+  emit("cancel");
+};
+
+const validate = () => {
+  let isValid = true;
 
   if (!form.title.trim()) {
     errors.title = "Title is required";
